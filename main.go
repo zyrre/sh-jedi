@@ -8,7 +8,15 @@ import (
 
 func main() {
 	shell := currentShell()
-	fmt.Println(shell)
+	switch shell {
+	case "bash":
+		fmt.Println("bash")
+	case "zsh":
+		fmt.Println("zsh")
+	default:
+		fmt.Println("Unknown or unsupported shell. Exiting.")
+		os.Exit(1)
+	}
 }
 
 func currentShell() string {
