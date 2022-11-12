@@ -11,7 +11,21 @@ func main() {
 	shell := currentShell()
 	commands := readHistFile(shell)
 	uniqueCommands := countUniqueCommands(commands)
-	fmt.Println(uniqueCommands)
+	topTenCommands := make(map[string]int)
+
+	for i := 0; i < 10; i++ {
+		var maxKey string
+		var maxVal int
+		for k, v := range uniqueCommands {
+			if v > maxVal {
+				maxKey = k
+				maxVal = v
+			}
+		}
+		topTenCommands[maxKey] = maxVal
+		delete(uniqueCommands, maxKey)
+	}
+	fmt.Println(topTenCommands)
 }
 
 func currentShell() string {
@@ -54,8 +68,10 @@ func readHistFile(shell string) []string {
 
 func countUniqueCommands(commands []string) map[string]int {
 	uniqueCommands := make(map[string]int)
-	for _, v := range commands {
-		uniqueCommands[v]++
+	for i, v := range commands {
+		if i < len(commands)-1 {
+			uniqueCommands[v+" :: "+commands[i+1]]++
+		}
 	}
 	return uniqueCommands
 }
