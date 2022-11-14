@@ -10,21 +10,9 @@ import (
 func main() {
 	shell := currentShell()
 	commands := readHistFile(shell)
-	uniqueCommands := countUniqueCommands(commands)
-	topTenCommands := make(map[string]int)
+	uniqueCommands := countUniqueDoubleCommands(commands)
+	topTenCommands := topTenFromMap(uniqueCommands)
 
-	for i := 0; i < 10; i++ {
-		var maxKey string
-		var maxVal int
-		for k, v := range uniqueCommands {
-			if v > maxVal {
-				maxKey = k
-				maxVal = v
-			}
-		}
-		topTenCommands[maxKey] = maxVal
-		delete(uniqueCommands, maxKey)
-	}
 	fmt.Println(topTenCommands)
 }
 
@@ -66,7 +54,7 @@ func readHistFile(shell string) []string {
 	return fileString
 }
 
-func countUniqueCommands(commands []string) map[string]int {
+func countUniqueDoubleCommands(commands []string) map[string]int {
 	uniqueCommands := make(map[string]int)
 	for i, v := range commands {
 		if i < len(commands)-1 {
@@ -74,4 +62,29 @@ func countUniqueCommands(commands []string) map[string]int {
 		}
 	}
 	return uniqueCommands
+}
+
+func countUniqueCommands(commands []string) map[string]int {
+	uniqueCommands := make(map[string]int)
+	for _, v := range commands {
+		uniqueCommands[v]++
+	}
+	return uniqueCommands
+}
+
+func topTenFromMap(commands map[string]int) map[string]int {
+	topTen := make(map[string]int)
+	for i := 0; i < 10; i++ {
+		var max int
+		var maxCommand string
+		for k, v := range commands {
+			if v > max {
+				max = v
+				maxCommand = k
+			}
+		}
+		topTen[maxCommand] = max
+		delete(commands, maxCommand)
+	}
+	return topTen
 }
